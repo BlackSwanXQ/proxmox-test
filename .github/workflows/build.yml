@@ -1,0 +1,20 @@
+name: Build and Push to Harbor
+on: [push]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build image
+        run: docker build -t registry.local/library/proxmox-test:${{ github.sha }} .
+      
+      - name: Login to Harbor
+        run: echo ${{ secrets.HARBOR_PASSWORD }} | docker login registry.local -u admin --password-stdin
+      
+      - name: Push image
+        run: |
+          docker push registry.local/library/proxmox-test:${{ github.sha }}
+          docker tag registry.local/library/proxmox-test:${{ github.sha }} registry.local/library/proxmox-test:latest
+          docker push registry.local/library/proxmox-test:latest
