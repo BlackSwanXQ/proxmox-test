@@ -1,4 +1,3 @@
 FROM alpine:latest
-CMD ["echo", "Hello from proxmox-test!"]
-
-
+LABEL version="2.0"
+CMD ["echo", "Hello from updated image!"]
