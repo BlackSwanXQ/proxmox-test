@@ -1,4 +1,3 @@
 FROM alpine:latest
-LABEL version="3.0" \
-      maintainer="BlackSwanXQ"
-CMD ["echo", "Hello from updated CI/CD pipeline!"]
+LABEL version="4.0"
+CMD ["echo", "Final test passed!"]
