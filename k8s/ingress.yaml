@@ -2,10 +2,18 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: web-page-ingress
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - mysite.black2swan.ru
+    secretName: mysite-tls
   rules:
-  - host: web.local
+  - host: mysite.black2swan.ru
     http:
       paths:
       - path: /
