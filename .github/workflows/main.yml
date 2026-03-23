@@ -1,38 +1,20 @@
-name: Deploy Web App to K3s
-
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+name: Build and Push to Harbor
+on: [push]
 
 jobs:
-  build-and-deploy:
-    runs-on: [self-hosted]
-    
+  build:
+    runs-on: self-hosted
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       
-      - name: Build Docker image
-        run: |
-          docker build -t harbor.black2swan.ru/myapp/web-page:${{ github.sha }} .
-          docker tag harbor.black2swan.ru/myapp/web-page:${{ github.sha }} harbor.black2swan.ru/myapp/web-page:latest
+      - name: Build image
+        run: docker build -t registry.local/myapp/web-page:${{ github.sha }} .
       
       - name: Login to Harbor
-        run: |
-          echo "${{ secrets.HARBOR_PASSWORD }}" | docker login https://harbor.black2swan.ru -u admin --password-stdin
+        run: echo ${{ secrets.HARBOR_PASSWORD }} | docker login registry.local -u admin --password-stdin
       
-      - name: Push to Harbor
+      - name: Push image
         run: |
-          docker push harbor.black2swan.ru/myapp/web-page:${{ github.sha }}
-          docker push harbor.black2swan.ru/myapp/web-page:latest
-      
-      - name: Deploy to Kubernetes
-        run: |
-          sudo k3s kubectl apply -f k8s/
-          sudo k3s kubectl rollout status deployment/web-page --timeout=60s
-      
-      - name: Verify deployment
-        run: |
-          sudo k3s kubectl get pods
-          echo "✅ Application deployed at http://web.local"
+          docker push registry.local/myapp/web-page:${{ github.sha }}
+          docker tag registry.local/myapp/web-page:${{ github.sha }} registry.local/myapp/web-page:latest
+          docker push registry.local/myapp/web-page:latest
