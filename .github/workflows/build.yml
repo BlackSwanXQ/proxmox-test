@@ -29,10 +29,10 @@ jobs:
       
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f k8s/
-          kubectl rollout status deployment/web-page --timeout=60s
+          sudo k3s kubectl apply -f k8s/
+          sudo k3s kubectl rollout status deployment/web-page --timeout=60s
       
       - name: Verify deployment
         run: |
-          kubectl get pods
+          sudo k3s kubectl get pods
           echo "✅ Application deployed at http://web.local"
