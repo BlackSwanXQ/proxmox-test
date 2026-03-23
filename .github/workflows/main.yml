@@ -15,17 +15,17 @@ jobs:
       
       - name: Build Docker image
         run: |
-          docker build -t registry.local/myapp/web-page:${{ github.sha }} .
-          docker tag registry.local/myapp/web-page:${{ github.sha }} registry.local/myapp/web-page:latest
+          docker build -t harbor.black2swan.ru/myapp/web-page:${{ github.sha }} .
+          docker tag harbor.black2swan.ru/myapp/web-page:${{ github.sha }} harbor.black2swan.ru/myapp/web-page:latest
       
       - name: Login to Harbor
         run: |
-          docker login registry.local -u admin -p ${{ secrets.HARBOR_PASSWORD }}
+          docker login https://harbor.black2swan.ru -u admin -p ${{ secrets.HARBOR_PASSWORD }}
       
       - name: Push to Harbor
         run: |
-          docker push registry.local/myapp/web-page:${{ github.sha }}
-          docker push registry.local/myapp/web-page:latest
+          docker push harbor.black2swan.ru/myapp/web-page:${{ github.sha }}
+          docker push harbor.black2swan.ru/myapp/web-page:latest
       
       - name: Deploy to Kubernetes
         run: |
